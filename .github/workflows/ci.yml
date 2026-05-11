@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate:
+    name: 校验 harness 规范
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: 检查 AGENTS.md 存在且 ≤150 行
+        run: |
+          test -f AGENTS.md || (echo "❌ 缺 AGENTS.md" && exit 1)
+          lines=$(wc -l < AGENTS.md)
+          if [ "$lines" -gt 150 ]; then
+            echo "❌ AGENTS.md 超过 150 行（当前 $lines），请精简"
+            exit 1
+          fi
+          echo "✅ AGENTS.md $lines 行"
+
+      - name: 检查必要目录
+        run: |
+          for d in progress decisions .ai scripts; do
+            test -d "$d" || (echo "❌ 缺目录 $d" && exit 1)
+          done
+          echo "✅ 目录结构 OK"
+
+      - name: 检查 feature_list.json 格式
+        run: |
+          python3 -c "import json; json.load(open('feature_list.json'))"
+          echo "✅ feature_list.json OK"
+
+  # 项目接入时取消注释以下任务
+  # test-unit:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - run: pip install pytest pytest-cov
+  #     - run: pytest --cov=src --cov-report=term --cov-fail-under=70
+
+  # test-e2e:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - uses: actions/setup-node@v4
+  #     - run: npx playwright install --with-deps
+  #     - run: npx playwright test

@@ -1,6 +1,6 @@
 {
   "project": "futurx-coding-harness",
-  "version": "1.0",
+  "version": "1.1",
   "updated": "2026-05-11",
   "features": [
     {
@@ -9,12 +9,15 @@
       "priority": "P3",
       "status": "done",
       "owner": "joey",
-      "description": "演示一个完整 task 目录的样例，新项目可以直接复制这个结构",
-      "acceptance": ["progress/tasks/T-000-example-task/ 完整可读", "包含 README/log/decisions/owner"]
+      "description": "演示完整 task 目录（含 spec/plan/log/decisions/owner）",
+      "acceptance": [
+        "progress/tasks/T-000-example-task/ 包含 6 个标准文件",
+        "spec.md 和 plan.md 是可复用模板"
+      ]
     }
   ],
   "_schema": {
-    "status": ["todo", "doing", "blocked", "review", "done", "archived"],
+    "status": ["todo", "spec-review", "plan-review", "doing", "blocked", "code-review", "done", "archived"],
     "priority": ["P0", "P1", "P2", "P3"]
   }
 }

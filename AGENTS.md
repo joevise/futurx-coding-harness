@@ -1,8 +1,10 @@
-# AGENTS.md — FuturX Coding Harness v1.0
+# AGENTS.md — FuturX Coding Harness v1.1
 
 > 本文件是项目的**唯一真相源**。任何 AI 编码工具（Cursor / Claude Code / OpenCode / Codex / Copilot）启动时必须先读完本文件 + 启动协议中的所有上下文文件，再动手写代码。
 >
 > **本文件长度上限：150 行**（OpenAI 实测过的最优长度，超过会被忽略）。
+>
+> **当前版本：v1.1（2026-05-11）** — 新增 SDD（规格驱动开发）流程
 
 ---
 
@@ -12,103 +14,102 @@
 
 ### 必读清单（不可跳过）
 
-1. **本文件 AGENTS.md**（项目地图 + 启动协议）
+1. **AGENTS.md**（项目地图 + 启动协议）
 2. **README.md**（项目目标 + 技术栈 + 部署）
 3. **`.ai/context.md`**（架构约束 / 风格 / 术语表 / 业务知识）
 4. **`feature_list.json`**（全量功能清单 + 优先级 + 状态）
 5. **`progress/current.md`**（当前 sprint 焦点 + 谁在做什么）
-6. **`progress/tasks/<当前 task ID>/`** 整个目录（任务描述 + 工作日志 + 决策）
-7. **`decisions/` 下所有 ADR**（架构决策记录，决定了"为什么这么设计"）
-8. **最近 7 天的 `progress/daily/*.md`**（其他人/Agent 最近做了什么）
+6. **`progress/tasks/<当前 task ID>/`** 整个目录（README + **spec.md** + **plan.md** + log + decisions）
+7. **`decisions/` 下所有 ADR**（架构决策记录）
+8. **最近 7 天的 `progress/daily/*.md`**
 
 ### 启动后必答 3 问
-
-读完上述文件后，必须能用一段话回答：
-
-- **当前 task 是什么？验收标准是什么？**
-- **这个项目的核心架构约束有哪些？哪些事不能做？**
+- **当前 task 的 Spec 是什么？验收标准是什么？**
+- **项目的核心架构约束有哪些？哪些事不能做？**
 - **最近 3 天有哪些已完成 / 进行中的工作？我接的是哪一段？**
 
 回答不出 = 上下文未对齐 = **不允许写代码**。
 
 ---
 
-## 📁 目录结构（强制）
+## 🧭 SDD 工作流（v1.1 新增 ⭐）
+
+**核心范式**：Spec → Plan → Test → Code（不是直接 AI 写代码）
+
+| 阶段 | 产出文件 | Review 角色 | 必须完成 |
+|---|---|---|---|
+| 1. Spec（规格） | `progress/tasks/T-XXX/spec.md` | 产品 / Leader | 用户故事 + 验收标准 + 边界条件 |
+| 2. Plan（计划） | `progress/tasks/T-XXX/plan.md` | 技术 Lead | 技术方案 + 任务拆解 + 风险点 |
+| 3. Test（测试） | `tests/T-XXX/` | 工程师 | 测试用例对应 spec 的验收标准 |
+| 4. Code（实现） | `src/...` | AI + 工程师 | 代码必须让 tests/T-XXX/ 全绿 |
+
+**SDD 规则**：
+- 任何新功能 task **必须有 spec.md**（修 bug / 小调整可豁免）
+- spec.md 未 review = 不能写 plan.md
+- plan.md 未 review = 不能写代码
+- 没有对应测试的代码 = 不能 merge
+
+可选工具：`uv tool install specify-cli --from git+https://github.com/github/spec-kit.git`（GitHub Spec-Kit）
+
+---
+
+## 📁 目录结构
 
 ```
 project/
-├── AGENTS.md                  # 本文件，项目唯一真相源
-├── README.md                  # 项目总览
-├── feature_list.json          # 功能清单（JSON 抗篡改）
-├── .ai/
-│   ├── context.md             # 长期上下文（架构/风格/术语）
-│   ├── tools-policy.md        # 各 AI 工具用法约定
-│   └── model-routing.md       # 模型选择策略
-├── progress/                  # 进度（task 为主轴）
-│   ├── current.md             # 全局当前状态（1屏看完）
-│   ├── tasks/                 # ⭐ 主轴：按任务组织
-│   │   └── T-XXX-name/
-│   │       ├── README.md      # 任务描述 + 验收标准
-│   │       ├── log.md         # 时间倒序工作日志
-│   │       ├── decisions.md   # 任务相关决策
-│   │       └── owner.txt      # 当前负责人
-│   ├── daily/                 # 辅轴：按日期 + 人
-│   │   └── YYYY-MM-DD-<name>.md
-│   └── archive/               # 已完成任务归档
-├── decisions/
-│   └── ADR-XXX-title.md       # 架构决策记录
-├── tests/                     # 端到端测试（Puppeteer/Playwright/pytest）
-├── .github/
-│   ├── pull_request_template.md
-│   └── copilot-instructions.md → ../AGENTS.md
-├── CLAUDE.md → AGENTS.md
-├── .cursorrules → AGENTS.md
-└── scripts/
-    └── sync-rules.sh          # 同步所有 AI 工具的 rules 软链
+├── AGENTS.md / CLAUDE.md→ / .cursorrules→ / CONVENTIONS.md→  # 同一份
+├── README.md
+├── feature_list.json
+├── .ai/{context.md, tools-policy.md, model-routing.md}
+├── progress/
+│   ├── current.md
+│   ├── tasks/T-XXX-name/{README, spec.md⭐, plan.md⭐, log, decisions, owner.txt}
+│   ├── daily/YYYY-MM-DD-<name>.md
+│   └── archive/
+├── decisions/ADR-XXX-*.md
+├── tests/T-XXX/                  # 按 task 组织测试
+├── .github/{pull_request_template.md, workflows/ci.yml}
+└── scripts/{sync-rules.sh, check-progress.sh}
 ```
 
 ---
 
 ## 🔁 Session SOP
 
-### 开头 3 件事
+**开头 3 件事**：
 1. `pwd` + `git status` + 读 `progress/current.md`
-2. 走完上面【强制启动协议】的必读清单
-3. 在 `progress/daily/今日-<我的名字>.md` 写下"本次目标"
+2. 走完【强制启动协议】必读清单
+3. 在 `progress/daily/今日-<我>.md` 写下"本次目标"
 
-### 结尾 3 件事
+**结尾 3 件事**：
 1. 跑测试（必须绿）
-2. `git commit`（消息格式：`[T-XXX] <type>: <description>`）+ 更新 `feature_list.json` 状态
-3. 写 ADR（如果有新决策）+ 更新 `progress/tasks/T-XXX/log.md` + `progress/daily/今日-<我的名字>.md`
+2. `git commit`（格式：`[T-XXX] <type>: <description>`）+ 更新 `feature_list.json`
+3. 写 ADR（如有新决策）+ 更新 `progress/tasks/T-XXX/log.md` + daily
 
 ---
 
 ## 🛡 顶端 RULES（不可违反）
 
-1. **上下文未读完 → 不写代码**。任何 session 必须走完启动协议。
-2. **架构/接口/选型决策 → 必须先写 ADR**，人类 review 通过才能实现。
-3. **每次提交 → 必须带测试**，CI 不绿不允许合并。
-4. **修改超 50 行 → 先列计划**，人类批准后再写。
-5. **session 结束 → 必须更新 progress/**，没更新 = 工作未完成。
-6. **commit message → 必须带 task ID**：`[T-XXX] feat/fix/docs: ...`
-7. **不允许直接 copy-paste AI 输出 commit**，至少自检一遍 + 跑测试。
+1. **上下文未读完 → 不写代码**
+2. **新功能 → 先写 spec.md，再写 plan.md，再写测试，最后写代码**（SDD）
+3. **架构 / 接口 / 选型决策 → 必须先写 ADR**
+4. **每次提交 → 必须带测试**，CI 不绿不允许合并
+5. **修改超 50 行 → 先列计划**
+6. **session 结束 → 必须更新 progress/**
+7. **commit message → 必须带 task ID**：`[T-XXX] feat/fix/...`
+8. **不允许直接 copy-paste AI 输出 commit**
 
 ---
 
-## 🧰 工具中立原则
+## 🧰 工具中立 & 测试栈
 
-用什么工具自己选（Cursor / Claude Code / OpenCode / Codex / Copilot），但：
-- ✅ 所有工具都吃 `AGENTS.md`（通过软链 `CLAUDE.md`/`.cursorrules`/...）
-- ✅ 所有工具都吐同样格式的 commit / PR / ADR
-- ✅ 模型选择参考 `.ai/model-routing.md`
-
-详见 `.ai/tools-policy.md`。
+- **AI 工具**：自由选（Cursor/Claude Code/OpenCode/Codex/Copilot），都软链到 AGENTS.md
+- **测试 3 层**：单元（pytest/vitest）+ 集成（Bruno + testcontainers）+ E2E（Playwright）
+- **AI 评测**：Inspect AI / Promptfoo（涉及 LLM 输出的任务）
+- 详见 `.ai/tools-policy.md` + `.ai/model-routing.md`
 
 ---
 
 ## 🔄 Harness 版本演进
-
-本 harness 自身也是被维护的。升级流程：
-- 每 2 周复盘一次（Harness 例会）
-- 升级走 PR review，更新版本号（v1.0 → v1.1 → ...）
-- 重大变更必须广播给所有项目
+- v1.0 (2026-05-11) — 首版（启动协议 + task 主轴 + 工具中立）
+- **v1.1 (2026-05-11) — 新增 SDD 流程（spec.md + plan.md）+ 测试 3 层规范**

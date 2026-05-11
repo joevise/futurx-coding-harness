@@ -1,0 +1,20 @@
+{
+  "project": "futurx-coding-harness",
+  "version": "1.0",
+  "updated": "2026-05-11",
+  "features": [
+    {
+      "id": "T-000",
+      "title": "示范任务（Example Task）",
+      "priority": "P3",
+      "status": "done",
+      "owner": "joey",
+      "description": "演示一个完整 task 目录的样例，新项目可以直接复制这个结构",
+      "acceptance": ["progress/tasks/T-000-example-task/ 完整可读", "包含 README/log/decisions/owner"]
+    }
+  ],
+  "_schema": {
+    "status": ["todo", "doing", "blocked", "review", "done", "archived"],
+    "priority": ["P0", "P1", "P2", "P3"]
+  }
+}

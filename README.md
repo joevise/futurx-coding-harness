@@ -1,75 +1,71 @@
-# FuturX Coding Harness v1.1
+# FuturX Coding Harness v1.2
 
 > FuturX 内部 AI vibe coding 标准 / 模板仓库
-> **核心范式**：SDD（规格驱动）+ TDD（测试驱动）+ 上下文完备性 + 工具中立
 
-## v1.1 新特性 ⭐
+## 三大核心范式
 
-- ✅ **SDD 工作流**：每个 task 必须 Spec → Plan → Test → Code
-- ✅ **测试 3 层规范**：单元（pytest/vitest）+ 集成（Bruno）+ E2E（Playwright）
-- ✅ **CI 自动校验** harness 合规性
-- ✅ **task 目录升级**：新增 spec.md + plan.md 模板
+| 范式 | 解决什么 | 引入版本 |
+|---|---|---|
+| **上下文完备性协议** | AI 启动时强制读完所有上下文 | v1.0 |
+| **SDD（Spec→Plan→Test→Code）** | AI 不能直接看需求写代码 | v1.1 |
+| **协作双重对齐** | 多人开发不撞车、不踩坑 | v1.2 ⭐ |
 
-## 是什么
+## v1.2 新特性 ⭐
 
-一套**强制性 AI 编码工程协议**：
-- 📝 顶端 RULES（`AGENTS.md`）
-- 📁 标准化文件骨架（progress / decisions / .ai / tests / scripts）
-- 🧭 **SDD 流程**（Spec → Plan → Test → Code）
-- 🔁 强制 SOP（session 开头/结尾必做）
-- 🧰 工具中立适配层（Cursor / Claude Code / OpenCode / Codex 都吃同一份）
-- ✅ Pre-commit hook + CI 阻断
+- ✅ **`scripts/new-task.sh`**：智能 task 创建（自动 ID + 相似度扫描 + 双重对齐协议）
+- ✅ **`scripts/sync-check.sh`**：session 启动时自动检查协作 task 动态
+- ✅ **`collaborators.json`**：结构化协作记录，替代单行 owner.txt
+- ✅ **子任务（T-XXX.Y）**：父子关系明确，加入协作有据可查
 
-## 为什么
+## 快速开始
 
-- 团队成员背景多样（传统程序员 + AI 原生）
-- 不同人用不同 AI 工具
-- 项目越来越多，**上下文丢失**和**决策不可溯源**是核心瓶颈
-- **AI 容易写出"测试通过但偏题"的代码** → 必须 SDD 先对齐"做什么"
-
-参考：
-- [GitHub Spec-Kit](https://github.com/github/spec-kit)（SDD 业界标准）
-- Anthropic — Effective Harnesses for Long-Running Agents
-- OpenAI — Harness Engineering: Leveraging Codex in an Agent-First World
-
-## 怎么用
-
-### 新项目启动
 ```bash
+# 1. 用本仓库做模板新建项目
 gh repo create my-project --template joevise/futurx-coding-harness
 cd my-project
 bash scripts/sync-rules.sh
-# 编辑 AGENTS.md 顶部 + .ai/context.md
+
+# 2. 开第一个 task
+bash scripts/new-task.sh
+# 按交互填写：描述 → 工具扫描相似 task → 决定独立/加入 → 创建目录
 ```
 
-### 已有项目接入
-```bash
-cp -rn /path/to/futurx-coding-harness/{AGENTS.md,progress,decisions,.ai,scripts,.github} ./
-bash scripts/sync-rules.sh
+## 三大核心设计速览
+
+### 1. 上下文完备性（v1.0）
+session 启动必须读 8 类文件，并能回答 3 个核心问题。
+
+### 2. SDD 流程（v1.1）
 ```
-
-### 开一个新功能（SDD 流程）
-```bash
-# 1. 创建 task 目录
-mkdir -p progress/tasks/T-001-my-feature tests/T-001
-cp progress/tasks/T-000-example-task/{spec,plan,log,decisions}.md progress/tasks/T-001-my-feature/
-
-# 2. 填 spec.md → 给产品/Leader review
-# 3. 填 plan.md → 给技术 Lead review
-# 4. 在 tests/T-001/ 写测试用例
-# 5. AI 写代码让测试通过
-# 6. PR + commit message: [T-001] feat: ...
+Spec（做什么） → Plan（怎么做） → Test（验证） → Code（实现）
 ```
+每步进 git、可 review、可追溯。
 
-## 四个核心设计
+### 3. 协作双重对齐（v1.2 ⭐）
 
-| 设计 | 说明 | 来源 |
-|---|---|---|
-| **Task 为主轴** | progress 按任务分，不按人 | Anthropic feature_list.json |
-| **AGENTS.md 唯一真相源** | 所有 AI 工具配置软链到它 | OpenAI Harness |
-| **上下文完备性协议** | 启动必须读完所有上下文 | 大Joe 提出 |
-| **SDD（v1.1）** | Spec→Plan→Test→Code，AI 不能直接看需求写代码 | GitHub Spec-Kit |
+**第 1 重：是不是同一个任务？**
+- `new-task.sh` 扫描所有进行中的 task
+- 找到相似的 → 强制用户决定：加入 / 独立 / 看完再说
+
+**第 2 重：加入他人 task 必须走 3 步对齐**
+- Step 1 读完 spec / plan / log / decisions
+- Step 2 联系 owner 达成分工共识
+- Step 3 声明自己的具体范围
+
+三步全打钩才创建子任务目录。
+
+## 工具中立
+
+用什么 AI 工具自己选（Cursor / Claude Code / OpenCode / Codex / Copilot），但：
+- 都软链到 AGENTS.md
+- 都吐同样格式的 commit / PR / ADR
 
 ## 版本历史
-- **v1.1** (2026-05-11) — SDD 流程 + 测试 3 层规范 + CI 校验
-- v1.0 (2026-05-11) — 首版（启动协议 + task 主轴 + 工具中立）
+- **v1.2** (2026-05-11) — 多人协作双重对齐 + new-task.sh + sync-check.sh
+- v1.1 (2026-05-11) — SDD + 测试 3 层 + CI 校验
+- v1.0 (2026-05-11) — 启动协议 + task 主轴 + 工具中立
+
+## 参考
+- [GitHub Spec-Kit](https://github.com/github/spec-kit)
+- Anthropic — Effective Harnesses for Long-Running Agents
+- OpenAI — Harness Engineering: Leveraging Codex in an Agent-First World

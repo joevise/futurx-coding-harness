@@ -1,0 +1,11 @@
+{
+  "task_id": "T-000",
+  "primary_owner": "joey",
+  "collaborators": [
+    {"name": "joey", "role": "owner", "joined": "2026-05-11", "scope": "整体（示范模板）"}
+  ],
+  "last_sync": "2026-05-11T10:00:00",
+  "sync_log": [
+    {"date": "2026-05-11", "actor": "joey", "type": "create", "note": "创建示范任务"}
+  ]
+}

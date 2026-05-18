@@ -13,15 +13,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: 检查 AGENTS.md 存在且 ≤150 行
+      - name: 检查 AGENTS.md 存在
         run: |
           test -f AGENTS.md || (echo "❌ 缺 AGENTS.md" && exit 1)
           lines=$(wc -l < AGENTS.md)
-          if [ "$lines" -gt 150 ]; then
-            echo "❌ AGENTS.md 超过 150 行（当前 $lines），请精简"
-            exit 1
-          fi
-          echo "✅ AGENTS.md $lines 行"
+          echo "✅ AGENTS.md 存在（$lines 行）"
 
       - name: 检查必要目录
         run: |

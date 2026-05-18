@@ -1,4 +1,4 @@
-# FuturX Coding Harness v1.2
+# FuturX Coding Harness v1.3
 
 > FuturX 内部 AI vibe coding 标准 / 模板仓库
 
@@ -19,6 +19,9 @@
 
 ## 快速开始
 
+让 AI agent 拉本 repo 并接入：直接对它说"帮我把当前项目接入 futurx coding harness"，它会读 SKILL.md 自己完成。
+
+或手动：
 ```bash
 # 1. 用本仓库做模板新建项目
 gh repo create my-project --template joevise/futurx-coding-harness
@@ -61,6 +64,7 @@ Spec（做什么） → Plan（怎么做） → Test（验证） → Code（实�
 - 都吐同样格式的 commit / PR / ADR
 
 ## 版本历史
+- **v1.3** (2026-05-18) — Skill 化入口 + 解除 AGENTS.md 行数限制 + 斜杠命令规范
 - **v1.2** (2026-05-11) — 多人协作双重对齐 + new-task.sh + sync-check.sh
 - v1.1 (2026-05-11) — SDD + 测试 3 层 + CI 校验
 - v1.0 (2026-05-11) — 启动协议 + task 主轴 + 工具中立

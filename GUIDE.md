@@ -245,9 +245,6 @@ A: 不要自己改！先 **联系 owner 沟通**，达成共识后写 ADR 记录
 ### Q7: 已经写了一半才发现是别人正在做的东西？
 A: 立刻停手，跑 `bash scripts/new-task.sh` 走第 1 重对齐，决定是合并还是放弃自己的工作。
 
-### Q8: AGENTS.md 超过 150 行了怎么办？
-A: 必须精简。OpenAI 实测过，AGENTS.md 超过 150 行就会被 AI 忽略。
-
 ---
 
 ## 八、违反规则的后果
@@ -259,7 +256,6 @@ A: 必须精简。OpenAI 实测过，AGENTS.md 超过 150 行就会被 AI 忽略
 | 加入他人 task 没走双重对齐 | PR 拒绝 |
 | commit message 不带 task ID | pre-commit hook 拒绝 |
 | 没更新 progress/ 就 commit | pre-commit hook 拒绝 |
-| AGENTS.md > 150 行 | CI 失败 |
 | 测试没全绿就 merge | CI 失败 |
 | AI 输出不看直接 commit | code review 拒绝 |
 

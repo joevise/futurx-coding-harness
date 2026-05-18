@@ -1,8 +1,8 @@
-# AGENTS.md — FuturX Coding Harness v1.2
+# AGENTS.md — FuturX Coding Harness v1.3
 
-> 本文件是项目的**唯一真相源**。任何 AI 编码工具（Cursor / Claude Code / OpenCode / Codex / Copilot）启动时必须先读完本文件 + 启动协议中的所有上下文文件，再动手写代码。
+> 本文件为 harness 协议主体，配套 SKILL.md 作为 agent 入口。任何 AI 编码工具（Cursor / Claude Code / OpenCode / Codex / Copilot）启动时必须先读完本文件 + 启动协议中的所有上下文文件，再动手写代码。
 >
-> **当前版本：v1.2（2026-05-11）** — 新增多人协作双重对齐协议
+> **当前版本：v1.3（2026-05-18）** — Skill 化入口 + 解除 AGENTS.md 行数限制
 
 ---
 
@@ -128,3 +128,4 @@ project/
 - v1.0 — 启动协议 + task 主轴 + 工具中立
 - v1.1 — SDD 流程 + 测试 3 层 + CI 校验
 - **v1.2 — 多人协作双重对齐 + new-task.sh + sync-check.sh + collaborators.json**
+- **v1.3 — Skill 化入口 + 解除 AGENTS.md 行数限制 + 斜杠命令规范**

@@ -13,7 +13,7 @@ version: 1.3
 1. 检查当前目录是不是 git 仓库（不是就报错让用户先 git init）
 2. 把以下文件/目录复制到当前项目（不覆盖已有文件，用 cp -rn）：
    - AGENTS.md, README.md（如果项目自己有，跳过 README.md）
-   - .ai/, progress/, decisions/, scripts/, .github/, templates/
+   - .ai/, progress/, decisions/, scripts/, .github/, templates/, commands/, SKILL.md
    - feature_list.json, .gitignore（合并而非覆盖）
 3. 根据用户使用的 agent 工具，在对应位置软链 AGENTS.md：
    - Claude Code → `.claude/CLAUDE.md → AGENTS.md`

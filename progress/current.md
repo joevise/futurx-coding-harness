@@ -1,23 +1,26 @@
-# 当前状态 (Current State)
+# 当前状态 - 2026-05-19
 
-> 1 屏可见全局状态板。
-> 任何人启动 session 第一件事就是读它。
+## 项目阶段
+v1.4 升级中 — Progress 4 件套 + 轻量化 + Superpower 集成
 
-## 🎯 当前 Sprint 焦点
-- **目标**：发布 FuturX Coding Harness v1.1（含 SDD）
-- **里程碑**：2026-05-11 完成 v1.1 发布
+## 技术栈速览
+- 类型：AI 编码协作模板仓库（无运行时）
+- 语言：Markdown + Bash
+- 双远端：GitHub (joevise) + GitLab (futurx)
+- 接入方式：Skill 化（对 AI agent 说一句话即可接入）
 
-## 👥 谁在做什么
+## 进行中的任务
+（无）
 
-| Task ID | 任务 | 负责人 | 状态 | 备注 |
-|---|---|---|---|---|
-| T-000 | 示范任务样例（含 SDD） | joey | ✅ done | v1.1 已升级 |
+## 最近完成（最多 5 个）
+- T-002 ✅ v1.4 升级（2026-05-19）
+- T-001 ✅ v1.3 Skill 化升级（2026-05-18）
+- T-000 ✅ 示范任务模板（2026-05-11）
 
-## 🚧 阻塞 / 待决策
-- 无
+## 已知问题 / Blocked
+- 待团队 review v1.4
 
-## 🔜 下一批要启动
-- 试点项目：用 daytrade-system 接入 v1.1，验证 SDD 流程
-
----
-**最后更新**：2026-05-11 by joey
+## 关键链接
+- Kick-off 飞书文档：https://futurxai.feishu.cn/docx/CGRGd6xW5o9SFyxdm2bcgEWnnrg
+- GitHub: https://github.com/joevise/futurx-coding-harness
+- GitLab: https://git.futurx.cc/futurx/futurxlab/futurx_coding_harness

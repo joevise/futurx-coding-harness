@@ -22,5 +22,4 @@ v1.4 升级中 — Progress 4 件套 + 轻量化 + Superpower 集成
 
 ## 关键链接
 - Kick-off 飞书文档：https://futurxai.feishu.cn/docx/CGRGd6xW5o9SFyxdm2bcgEWnnrg
-- GitHub: https://github.com/joevise/futurx-coding-harness
 - GitLab: https://git.futurx.cc/futurx/futurxlab/futurx_coding_harness

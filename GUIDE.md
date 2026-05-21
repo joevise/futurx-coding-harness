@@ -1,315 +1,297 @@
-# FuturX Coding Harness v1.2 上手指南
+# FuturX Coding Harness — 上手指南
 
-> 给团队成员的 30 分钟速通文档
-> **目标**：让任何人（不管是传统程序员还是 AI 原生）都能在 30 分钟内把 harness 用起来。
-
----
-
-## 一、Harness 是什么？为什么必须用？
-
-**一句话**：FuturX 公司内部所有 AI 编码项目的**强制协作标准**。
-
-**解决的痛点**：
-- 不同人用不同 AI 工具（Cursor / Claude Code / Copilot / OpenCode），项目散乱
-- AI 容易写出"测试通过但偏题"的代码
-- 多人协作时无意识做重复工作、推翻别人决策
-- 半年后没人记得"当初为什么这么设计"
-
-**核心范式**（必须记住）：
-
-```
-上下文完备性 + SDD（Spec→Plan→Test→Code） + 协作双重对齐 + 工具中立
-```
+> 无论你是从零开始还是接手一个半路项目，这份指南告诉你：**第一步做什么、第二步做什么、第三步做什么**。
+>
+> 读完后：你应该能在 30 分钟内让任何一个 AI coding 工具（Claude Code / Cursor / OpenCode / Codex）以正确的方式接手你的项目。
 
 ---
 
-## 二、5 分钟环境准备
+## 两种场景，对号入座
 
-### 1. 安装必要工具
-```bash
-# Git（必须）
-git --version  # 应该 ≥ 2.30
-
-# Python 3（必须，用于 new-task.sh 内部）
-python3 --version  # 应该 ≥ 3.8
-
-# GitHub CLI（推荐）
-gh --version
-
-# uv（可选，用于 GitHub Spec-Kit）
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-### 2. 配置 git user
-```bash
-git config --global user.name "你的名字"
-git config --global user.email "你的邮箱"
-```
-
-> ⚠️ `user.name` 会被自动写入 `collaborators.json`，**必须填真名**，不要用 nickname。
-
-### 3. 选择你的 AI 工具
-公司推荐：
-- 主力编码：**OpenCode + MiniMax-M2.7**（最省钱）
-- 复杂推理：**Claude Code**
-- 实时辅助：**Cursor**
-
-任何工具都吃同一份 `AGENTS.md`，自由选择。
-
----
-
-## 三、3 种使用场景
-
-### 场景 A：新建一个项目
-
-```bash
-# 1. 用 harness 做模板
-gh repo create my-project --template joevise/futurx-coding-harness
-cd my-project
-
-# 2. 一键软链所有 AI 工具配置
-bash scripts/sync-rules.sh
-
-# 3. 编辑项目元信息
-vim AGENTS.md          # 改顶部项目名
-vim .ai/context.md     # 改业务背景 / 架构约束
-vim README.md          # 改项目说明
-
-# 4. 提交初始化
-git add -A && git commit -m "[T-000] init: 项目初始化"
-git push
-```
-
-### 场景 B：给已有项目接入 harness
-
-```bash
-cd /path/to/your-existing-project
-
-# 1. 复制 harness 骨架（不覆盖已有代码）
-cp -rn /path/to/futurx-coding-harness/{AGENTS.md,progress,decisions,.ai,scripts,.github,feature_list.json,.gitignore} ./
-
-# 2. 软链 AI 工具配置
-bash scripts/sync-rules.sh
-
-# 3. 提交
-git add -A && git commit -m "[T-000] chore: 接入 FuturX Coding Harness v1.2"
-```
-
-### 场景 C：加入一个已有的 harness 项目（最常见！）
-
-```bash
-# 1. clone
-git clone <项目地址>
-cd <项目>
-
-# 2. session 启动自检（关键！）
-bash scripts/sync-check.sh
-# 会显示你参与的协作 task 最近 48h 的动态
-
-# 3. 走启动协议（必读 8 类文件）
-#    见下一节
-```
-
----
-
-## 四、Session 启动协议（强制）
-
-**每次开始工作前，必须按顺序读完以下文件**：
-
-| 序号 | 文件 | 作用 |
-|---|---|---|
-| 1 | `AGENTS.md` | 项目唯一真相源 + 强制规则 |
-| 2 | `README.md` + `.ai/context.md` | 项目目标 + 架构约束 |
-| 3 | `feature_list.json` | 全量功能清单 + 状态 |
-| 4 | `progress/current.md` | 当前 sprint + 谁在做啥 |
-| 5 | `progress/tasks/<当前 task>/` 整个目录 | 你接手的任务全部上下文 |
-| 6 | `decisions/` 下所有 ADR | 已定的架构决策 |
-| 7 | 最近 7 天的 `progress/daily/*.md` | 其他人最近做了什么 |
-| 8 | `bash scripts/sync-check.sh` | 协作 task 最新动态 |
-
-**读完必须能回答 3 个问题**：
-- 当前 task 的 Spec 是什么？验收标准？
-- 项目的核心架构约束有哪些？哪些事不能做？
-- 最近 3 天有哪些工作？我接的是哪一段？
-
-**回答不出 = 还没准备好 = 不能写代码。**
-
----
-
-## 五、开一个新功能（SDD 流程）
-
-### 关键铁律：**不允许手动建 task 目录**
-
-```bash
-bash scripts/new-task.sh
-```
-
-工具会引导你走完：
-
-**1. 描述任务**
-```
-> 一句话描述你要做的任务：
-> 加一个开盘三线信号识别模块
-```
-
-**2. 自动扫描相似 task**
-工具会找到所有进行中的相似 task，强制你三选一：
-- [1] 加入已有 task（变成 T-XXX.Y 子任务）
-- [N] 独立新 task
-- [Q] 取消
-
-**3. 如果加入已有 task，必走双重对齐 3 步**
-- Step 1: 读完 owner 的 spec / plan / log / decisions
-- Step 2: 联系 owner 达成分工共识
-- Step 3: 声明你的具体范围（≥10 字）
-
-**4. 工具自动创建**
-- 目录 + 6 个模板文件
-- `collaborators.json` 自动登记你
-- `feature_list.json` 自动更新
-- `progress/daily/` 自动写一条
-
-### 接下来按 SDD 流程走
-
-```
-spec.md  →  plan.md  →  tests/T-XXX/  →  代码
- ↓          ↓             ↓                ↓
-产品/Leader  技术 Lead     工程师写测试     AI 写实现
-review     review                       让测试全绿
-```
-
-**每一步都不能跳！** spec 没通过不能写 plan，plan 没通过不能写测试，测试没写不能写代码。
-
----
-
-## 六、日常工作 SOP
-
-### 开头 3 件事
-```bash
-# 1. 状态检查
-pwd
-git status
-git pull
-
-# 2. 协作同步检查
-bash scripts/sync-check.sh
-
-# 3. 启动协议（读 8 类文件）+ 在 progress/daily/今日-我.md 写"本次目标"
-```
-
-### 写代码时
-- ✅ 只动 spec.md 已定义的范围
-- ✅ 严格让 tests/T-XXX/ 全绿
-- ✅ 不超出 plan.md 列出的任务清单
-- ❌ 不自己加戏（spec 没写的功能别加）
-- ❌ 不修改其他 task 的代码（除非你也加入了那个 task）
-
-### 结尾 3 件事
-```bash
-# 1. 跑测试
-npm test  # 或 pytest, go test, ...
-
-# 2. commit（必须带 task ID）
-git commit -m "[T-003.1] feat: 实现三线信号识别核心逻辑"
-
-# 3. 更新进度
-#    - progress/tasks/T-XXX/log.md（追加今天做的事）
-#    - progress/daily/今日-我.md（追加成果）
-#    - feature_list.json（更新 status）
-
-git push
-```
-
----
-
-## 七、常见问题 FAQ
-
-### Q1: 为什么不能手动建 task 目录？
-A: 因为多人协作时会有 ID 冲突、命名风格不一、漏掉对齐步骤。`new-task.sh` 一次性解决。
-
-### Q2: 我只改一个 bug，也要走 SDD？
-A: **不用**。修 bug / 小调整可以豁免 spec.md。但 commit message 还是要带 task ID。
-
-### Q3: 我能不能不写 ADR？
-A: 涉及**架构 / 接口 / 选型决策**必须写。改 bug、改样式、加日志这种不用。
-
-### Q4: 我用 Cursor，团队同事用 Claude Code，会冲突吗？
-A: 不会。所有工具都软链到同一份 `AGENTS.md`，吐出同样格式的产出。
-
-### Q5: AI 输出可以直接 commit 吗？
-A: **不行**。必须先跑测试 + 自己看一眼。AI 输出 100% 不看就 commit 是 PR 拒绝项。
-
-### Q6: 我加入别人的 task，发现他设计有问题怎么办？
-A: 不要自己改！先 **联系 owner 沟通**，达成共识后写 ADR 记录决策变更。
-
-### Q7: 已经写了一半才发现是别人正在做的东西？
-A: 立刻停手，跑 `bash scripts/new-task.sh` 走第 1 重对齐，决定是合并还是放弃自己的工作。
-
----
-
-## 八、违反规则的后果
-
-| 违反项 | 后果 |
+| 你的情况 | 阅读章节 |
 |---|---|
-| 没走启动协议就写代码 | PR 拒绝 |
-| 手动建 task 目录 | PR 拒绝 |
-| 加入他人 task 没走双重对齐 | PR 拒绝 |
-| commit message 不带 task ID | pre-commit hook 拒绝 |
-| 没更新 progress/ 就 commit | pre-commit hook 拒绝 |
-| 测试没全绿就 merge | CI 失败 |
-| AI 输出不看直接 commit | code review 拒绝 |
+| **我要从零启动一个全新项目** | → 场景 A：冷启动 |
+| **我要接手一个已有代码的项目** | → 场景 B：接入现有项目 |
+| **我想让 Claude Code / Cursor 等工具用 harness** | → 所有工具配置章节 |
 
 ---
 
-## 九、关键文件速查
+## 工具配置总览
 
-```
-AGENTS.md                    ← 唯一真相源，先读这个
-README.md                    ← 项目概览
-feature_list.json            ← 全量任务清单
-progress/current.md          ← 现在谁在做啥
-progress/tasks/T-XXX/        ← 单个任务全部上下文
-  ├── README.md              ← 任务描述
-  ├── spec.md                ← 做什么（产品视角）
-  ├── plan.md                ← 怎么做（工程视角）
-  ├── log.md                 ← 工作日志（时间倒序）
-  ├── decisions.md           ← 任务级决策
-  └── collaborators.json     ← 协作者登记 + sync_log
-decisions/ADR-XXX-*.md       ← 架构决策记录
-tests/T-XXX/                 ← 任务对应测试
-.ai/                         ← AI 工具配置中心
-  ├── context.md             ← 长期上下文
-  ├── tools-policy.md        ← 工具使用约定
-  └── model-routing.md       ← 模型选择策略
-scripts/
-  ├── new-task.sh            ← ⭐ 创建 task 必用
-  ├── sync-check.sh          ← session 启动自检
-  ├── sync-rules.sh          ← AI 工具软链同步
-  └── check-progress.sh      ← pre-commit hook
+不管哪种场景，你都需要先告诉你的 AI 工具："**启动时先读 harness 的规则**"。
+
+### Claude Code
+
+```bash
+# 方式 1：项目级配置（在项目根目录）
+echo 'AGENTS.md' > .claude/projects/default.md
+# 或直接让 Claude Code 读取
 ```
 
+Claude Code **默认读取 `AGENTS.md`**（无需配置）。首次运行时它会自动找到项目根目录的 `AGENTS.md`。
+
+确认方法：项目根目录有 `AGENTS.md` 即可。
+
+### Cursor
+
+Cursor 读取 `.cursorrules` 文件。Harness 安装时已软链：
+
+```bash
+ls -la .cursorrules  # 应该指向 AGENTS.md
+```
+
+如果没软链，手动创建：
+
+```bash
+ln -sf AGENTS.md .cursorrules
+```
+
+### OpenCode / OpenClaw
+
+直接读 `AGENTS.md`。启动后告诉它：
+
+```
+请先读 AGENTS.md 和 .harness/AGENTS.base.md，然后告诉我当前项目状态。
+```
+
+### Codex（GitHub）
+
+在项目根目录创建 `.github/copilot-instructions.md`：
+
+```markdown
+# Copilot Instructions
+
+在开始任何任务前，先读取以下文件：
+1. AGENTS.md
+2. .harness/AGENTS.base.md
+3. progress/current.md
+4. progress/lessons.md
+```
+
+Harness 安装脚本已自动处理此事。
+
+### 通用原则
+
+**任何 AI coding 工具**，只要它能读文件系统，就让它先读这两个文件：
+
+1. `AGENTS.md` — 项目入口（项目名 + 版本 + 工具配置）
+2. `.harness/AGENTS.base.md` — 团队约束（铁律 + Session 流程）
+
 ---
 
-## 十、向团队推广建议
+## 场景 A：冷启动（全新项目，从零开始）
 
-1. **第 1 周**：先在 1-2 个项目试点（不大改动现有代码，只接入流程）
-2. **第 2 周**：开 30 分钟培训会，演示 `new-task.sh` 完整流程
-3. **第 3 周**：所有新项目强制使用
-4. **第 4 周后**：老项目逐步迁移
+> 适用：你要在一个空目录里开始做新项目，还没有一行代码。
 
-**关键**：**Leader 必须自己先用起来**，团队才会跟。
+### Step 1：初始化 Git 仓库（2 分钟）
+
+```bash
+cd ~/your-project-path
+git init
+git remote add origin https://github.com/your-org/your-project.git
+# 或你的 GitLab
+git remote add origin https://git.futurx.cc/futurx/your-org/your-project.git
+```
+
+### Step 2：接入 Harness（30 秒）
+
+```bash
+bash ~/joevise-projects/futurx-coding-harness/scripts/install-into.sh
+```
+
+这个脚本会创建：
+- `.harness/` — 约束层（只读）
+- `progress/` — 开发过程目录
+- `contracts/` — 契约目录
+- `product/` — 产品目录
+- `AGENTS.md` — 项目入口
+- `SKILL.md` — Agent skill 入口
+- 工具配置文件（`.cursorrules` / `.github/copilot-instructions.md` 等）
+
+### Step 3：用 AI 工具打开项目（1 分钟）
+
+用你最顺手的工具打开项目目录：
+
+```bash
+# Claude Code
+claude
+
+# Cursor
+cursor .
+
+# OpenCode
+opencode
+
+# 直接用 VS Code / JetBrains 等编辑器也行
+```
+
+### Step 4：AI 自动识别 + 初始化 current.md（5 分钟）
+
+全新项目还没有 `progress/current.md` 的内容。AI 工具进入后，你应该看到它识别到 `.harness/` 但 `progress/current.md` 几乎是空的。
+
+**告诉 AI 一句话**：
+
+```
+这是一个全新项目，请帮我初始化 harness：
+
+1. 编辑 AGENTS.md 顶部的项目名
+2. 帮我写 progress/current.md（全新项目版）
+3. 告诉我接下来做什么
+```
+
+AI 会：
+- 确认项目基本信息（项目名、技术栈、目标）
+- 起草 `progress/current.md`
+- 给出下一个 Action 项
+
+### Step 5：第一个 commit（2 分钟）
+
+```bash
+git add -A
+git commit -m "[T-000] chore: 初始化 FuturX Coding Harness v$(cat .harness/VERSION)"
+git push origin main
+```
+
+### 冷启动完成 ✓
+
+之后每次新 session，AI 工具会自动读 `progress/current.md` + `progress/lessons.md`，你不需要再做任何配置。
 
 ---
 
-## 附录：参考资料
+## 场景 B：接入现有项目（接手已有代码的仓库）
 
-- 仓库：https://github.com/joevise/futurx-coding-harness
-- GitHub Spec-Kit：https://github.com/github/spec-kit
-- Anthropic — Effective Harnesses for Long-Running Agents
-- OpenAI — Harness Engineering: Leveraging Codex in an Agent-First World
+> 适用：项目已经有代码了，但没用 harness 或想切换到 harness。
+
+### Step 1：.clone 项目（如果还没 clone）
+
+```bash
+git clone https://git.futurx.cc/futurx/your-team/your-project.git
+cd your-project
+```
+
+### Step 2：接入 Harness（30 秒）
+
+```bash
+bash ~/joevise-projects/futurx-coding-harness/scripts/install-into.sh
+```
+
+**重要**：这个脚本是**幂等的、只加不改**的：
+- 已有的代码 → 一行不动
+- 已有的 `progress/` → 跳过（不会覆盖）
+- 没有的目录 → 才创建
+
+### Step 3：用 AI 工具打开项目（1 分钟）
+
+```bash
+# Claude Code / Cursor / OpenCode / Codex 等
+```
+
+### Step 4：告诉 AI "考古这个项目"（20-30 分钟）⭐
+
+**这是最关键的一步**。看着 AI 的眼睛，说：
+
+```
+这项目我没接触过，帮我考古一下。
+```
+
+AI 会自动识别场景（`progress/current.md` 几乎为空），询问是否启动 onboarding archaeology。同意后它会：
+
+1. **机器探针**（5-10 分钟）：扫描目录结构、git 历史、依赖文件、路由文件、TODO/FIXME 注释
+2. **AI 理解**（10-20 分钟）：追踪入口 → 主流程 → 抽样活跃模块 → 推测业务逻辑
+3. **7 份产出**：写入 `progress/` 和 `contracts/` 目录
+
+**产出的文件**：
+
+| 文件 | 用途 |
+|---|---|
+| `progress/current.md` | 项目当前状态，新人 5 分钟入门 |
+| `progress/code-map.md` | 详细代码地图 |
+| `progress/lessons_inferred.md` | AI 推测的踩坑记录（待你复核） |
+| `progress/onboarding-report.md` ⭐ | **你最先读的**，30 分钟上手指南 |
+| `contracts/api/_inferred.md` | 反向提取的 API 清单（待复核） |
+| `product/inferred-features.md` | AI 推测的产品功能 |
+| `progress/onboard-uncertainty.md` ⭐ | **最重要的**，AI 标出的"我不确定"清单 |
+
+### Step 5：人工复核（10-20 分钟）
+
+考古完成后，**你必须做这几件事**：
+
+#### 5a. 读 `onboarding-report.md`
+这应该让你在 30 分钟内对这个项目有手感。读完后你应该知道：
+- 项目是干啥的
+- 怎么跑起来
+- 改一个常见功能要碰哪些文件
+- 哪里有坑
+
+#### 5b. 拿 `onboard-uncertainty.md` 找前作者/前同事问清楚
+这份清单里全是 AI 拿不准的地方。拿着它去找原作者过一遍，比自己猜快 10 倍。
+
+#### 5c. 确认 API 契约
+打开 `contracts/api/_inferred.md`，对照代码确认 API 是否准确。
+- 如果没问题：`git mv contracts/api/_inferred.md contracts/api/<service-name>.md`
+- 如果有误：修正后再 rename
+
+#### 5d. 合并 lessons
+`progress/lessons_inferred.md` 里的推测坑，如果确认是真的，手动合并到 `progress/lessons.md`（如果已存在的话）。
+
+### Step 6：提交（2 分钟）
+
+```bash
+# 晋升 _inferred 文件（去掉后缀）
+git mv contracts/api/_inferred.md contracts/api/<your-service>.md 2>/dev/null || true
+
+git add -A
+git commit -m "[T-000] chore: 接入 FuturX Coding Harness v$(cat .harness/VERSION)"
+git push origin main
+```
+
+### 接入完成 ✓
+
+之后团队任何人加入，只需要 `git clone` + `bash install-into.sh`，AI 工具自动识别 harness，任何角色进来都能拿到一致的上下文。
 
 ---
 
-**版本**：v1.2（2026-05-11）
-**维护者**：joey（FuturX AI）
-**反馈**：直接在 GitHub Issues 或飞书群提
+## 附录：install-into.sh 做了什么
+
+| 操作 | 说明 |
+|---|---|
+| 创建 `.harness/` | 从主仓库复制约束层（AGENTS.base.md / VERSION / scripts / skills / templates / decisions） |
+| 创建 `progress/` | 目录骨架，不覆盖已有内容 |
+| 创建 `contracts/` | 目录骨架，不覆盖已有内容 |
+| 创建 `product/` | 目录骨架，不覆盖已有内容 |
+| 软链 `CLAUDE.md` → `AGENTS.md` | Claude Code 自动读取 |
+| 软链 `.cursorrules` → `AGENTS.md` | Cursor 自动读取 |
+| 创建 `.github/copilot-instructions.md` | Codex/GitHub Copilot 读取 |
+| 安装 `.github/workflows/` | harness-sync.yml + auto-update-code-map.yml |
+| 初始化 `progress/current.md` | 仅当文件不存在时（全新项目版模板） |
+
+---
+
+## 附录：workflows 自动同步
+
+安装后，两个 GitHub Actions 自动运行：
+
+### 1. `harness-sync.yml` — 每周一自动同步
+每周一从主仓库拉取 `.harness/` 最新版本，自动开 PR 推送到下游项目。
+
+### 2. `auto-update-code-map.yml` — merge 后自动刷新
+每次 PR merge 到 main，自动跑 `generate-code-map.sh` 刷新 `progress/code-map.md`，并 commit 回仓库。
+
+---
+
+## 常见问题
+
+**Q: 安装后 AI 工具没有自动读 AGENTS.md？**
+A: 确认 `.cursorrules` 软链存在（`ls -la .cursorrules`）。没有的话手动 `ln -sf AGENTS.md .cursorrules`。
+
+**Q: 全新项目，current.md 应该写什么？**
+A: 让 AI 工具帮你初始化。全新项目的 current.md 很简单：项目一句话 + 技术栈 + 开发计划（未来 1-2 周要做什么）。
+
+**Q: 我不想用 onboarding archaeology，太慢了？**
+A: 对于你熟悉的现有项目，可以跳过 Step 4，直接手动填 `progress/current.md`（10 分钟足够）。onboarding archaeology 是给**真正陌生的项目**用的。
+
+**Q: 主仓库更新了，我的项目怎么同步？**
+A: 什么都不用做。`harness-sync.yml` 每周一自动给你开 PR。如果你急着要，现在就触发：`git fetch origin` 然后看有没有新 PR。
+
+**Q: 多角色并行开发，怎么保证不冲突？**
+A: 每人开发前 `git pull`，MR review 通过后 merge，AI 工具 merge 后会自动刷新 code-map。核心是**上下文在文件里，不在人的脑子里**。

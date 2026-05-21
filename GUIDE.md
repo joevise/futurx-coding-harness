@@ -8,6 +8,40 @@
 
 ---
 
+## 第一步：先把 harness 的骨架放进你的项目
+
+**这一步最关键，说清楚**：
+
+harness 不是让你先 clone 一个仓库，而是**在你自己的项目里跑一个脚本**，把 harness 的骨架复制进来。
+
+```bash
+# 1. 先去 GitHub 或 GitLab 建一个空仓库（你的新项目）
+#    例如：https://git.futurx.cc/futurx/your-team/my-new-project.git
+
+# 2. Clone 下来
+git clone https://git.futurx.cc/futurx/your-team/my-new-project.git
+cd my-new-project
+
+# 3. 把 harness 的骨架复制进来（就这一步）
+bash ~/joevise-projects/futurx-coding-harness/scripts/install-into.sh
+```
+
+执行完后你的项目变成这样：
+```
+my-new-project/
+├── .harness/          ← harness 规则骨架（从主仓库复制进来）
+├── .github/           ← workflows
+├── templates/         ← 模板
+├── progress/          ← 空目录
+├── contracts/         ← 空目录
+├── product/           ← 空目录
+└── AGENTS.md          ← 项目入口
+```
+
+**你的业务代码还没写**，只有 harness 的骨架在这里。
+
+---
+
 ## 两种场景，对号入座
 
 | 你的情况 | 阅读章节 |
@@ -52,39 +86,41 @@
 
 ## 场景 A：冷启动（全新项目，从零开始）
 
-> 适用：你有一个空目录，或者一个刚建好的 Git 仓库，还没有业务代码。
+> 适用：你新建了一个空 Git 仓库，还没有任何业务代码。
 
-### Step 1：把你的空项目交给 AI（1 分钟）
+### 完整流程（5 步）
 
-用你最顺手的工具打开项目目录，告诉它：
+**Step 1：在 GitHub / GitLab 新建一个空仓库**
+
+去你的代码托管平台建一个空仓库，比如：
+```
+https://git.futurx.cc/futurx/your-team/my-new-project.git
+```
+
+**Step 2：Clone 到本地**
+```bash
+git clone https://git.futurx.cc/futurx/your-team/my-new-project.git
+cd my-new-project
+```
+
+**Step 3：把 harness 骨架复制进来**
+```bash
+bash ~/joevise-projects/futurx-coding-harness/scripts/install-into.sh
+```
+
+这时你的空项目里已经有了 `.harness/`、`AGENTS.md`、`progress/` 等 harness 必须的骨架，但**还没有任何业务代码**。
+
+**Step 4：交给 AI 初始化**
+
+用你的 AI 工具打开这个项目，告诉它：
 
 ```
-帮我接上 FuturX Coding Harness。
+帮我把这个项目接上 FuturX Coding Harness。
 ```
 
-### Step 2：AI 自动完成初始化（5 分钟）
+AI 会自动完成所有初始化，并问你项目叫什么、做什么业务。
 
-AI 会自动：
-
-1. 识别这是一个全新项目
-2. 从 harness 主仓库获取 `.harness/` 约束层
-3. 初始化 `progress/`、`contracts/`、`product/` 目录骨架
-4. 创建 `AGENTS.md` 入口文件
-5. 软链工具配置文件（`.cursorrules` 等）
-6. 安装 GitHub workflows（如果用 GitHub）
-7. 起草第一版 `progress/current.md`
-
-### Step 3：确认并补充项目信息（5 分钟）
-
-AI 初始化完成后会告诉你它做了什么，然后问你：
-
-- 项目叫什么名字？
-- 做什么业务？
-- 用什么技术栈？
-
-你回答，AI 更新 `AGENTS.md` 和 `progress/current.md`。
-
-### Step 4：第一个 commit（1 分钟）
+**Step 5：提交**
 
 ```
 帮我提交。
@@ -104,26 +140,31 @@ AI 自动 `git add -A && git commit -m "[T-000] chore: 初始化 FuturX Coding H
 
 > 适用：项目已经有代码了，但没用 harness，或者想切换到 harness。
 
-### Step 1：把项目交给 AI（1 分钟）
+### 完整流程（5 步）
 
-用你最顺手的工具打开项目目录，告诉它：
+**Step 1：Clone 项目**
+```bash
+git clone https://git.futurx.cc/futurx/your-team/existing-project.git
+cd existing-project
+```
+
+**Step 2：把 harness 骨架复制进来**
+```bash
+bash ~/joevise-projects/futurx-coding-harness/scripts/install-into.sh
+```
+
+⚠️ **这个脚本是幂等的、只加不改**：
+- 已有的业务代码 → 一行不动
+- 已有的 `progress/` → 跳过（不会覆盖）
+- 没有的目录 → 才创建
+
+**Step 3：交给 AI**
+
+用你的 AI 工具打开项目目录，告诉它：
 
 ```
 帮我把这个项目接上 FuturX Coding Harness。
 ```
-
-### Step 2：AI 自动完成初始化（5 分钟）
-
-AI 会自动：
-
-1. 识别这是一个有代码的已有项目
-2. 从 harness 主仓库获取 `.harness/` 约束层
-3. 初始化 `progress/`、`contracts/`、`product/` 目录骨架
-4. 创建/更新 `AGENTS.md`
-5. 安装 GitHub workflows
-6. **自动识别项目当前状态**（技术栈、目录结构）
-
-### Step 3：考古这个项目（20-30 分钟）⭐
 
 如果 AI 发现这是一个有代码的已有项目，它会主动询问：
 

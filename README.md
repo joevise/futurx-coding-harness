@@ -1,26 +1,30 @@
-# FuturX Coding Harness v1.5
+# FuturX Coding Harness v1.6
 
 > FuturX 内部 AI vibe coding 标准 / 模板仓库
 
-## ⭐ v1.5 新增（2026-05-21）
+## ⭐ v1.6 新增（2026-05-21）
 
-**两层分发 + Contracts + Product + code-map 自动刷新**
+**AI Onboarding Archaeology — 陌生项目自动考古 Skill**
 
-- **两层架构**：`.harness/`（约束层，只读，自动同步）+ 项目状态层（自管理）
-- **Contracts 层**：`contracts/` 跨角色契约 SSOT（铁律 5）
-- **Product 层**：`product/` 产品/设计上下文（PRD / 设计稿 / 用户故事）
-- **code-map 自动刷新**：main 分支 push 后由 GitHub Action 自动跑（HUMAN 段保留）
-- **接入零成本**：`bash scripts/install-into.sh` 一行命令
+- 任何 AI agent（Claude Code / Cursor / OpenCode / Codex / Copilot）首次进入未接入 harness 的项目，自动识别并询问是否启动考古
+- 7 份自动产出：current / code-map / lessons / onboarding-report / api / features / uncertainty
+- 三段诚实标记机制：✅ 证据 / ⚠️ 推测 / ❓ 不确定
+- `_inferred` 后缀 → 人工复核后晋升为正式 SSOT
+- 用户零命令成本（不用打任何命令）
 
-详见 `AGENTS.md` 和 `decisions/ADR-010 ~ 013`。
+详见 `AGENTS.md` 和 `decisions/ADR-014-ai-onboard-archaeology.md`。
+
+## v1.5（同日发布）
+
+两层分发 + Contracts + Product + code-map 自动刷新（铁律 4→5）
 
 ## 历史
 
-- v1.4 — Progress 4 件套 + 轻量化 + Superpower 集成
-- v1.3 — Skill 化升级
-- v1.2 — 多人协作双重对齐
-- v1.1 — SDD 流程
-- v1.0 — 启动协议 + task 主轴
+- v1.4 Progress 4 件套 + 轻量化 + Superpower
+- v1.3 Skill 化升级
+- v1.2 多人协作双重对齐
+- v1.1 SDD 流程
+- v1.0 启动协议 + task 主轴
 
 详见 `CHANGELOG.md`。
 
@@ -30,6 +34,8 @@
 cd /path/to/your-project
 bash /path/to/futurx-coding-harness/scripts/install-into.sh
 ```
+
+接入后用你的 AI 工具打开项目，它会自动询问是否跑 onboarding-archaeology（陌生项目）。
 
 ## 上手指南
 

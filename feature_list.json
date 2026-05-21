@@ -1,6 +1,6 @@
 {
   "project": "futurx-coding-harness",
-  "version": "1.5",
+  "version": "1.6",
   "updated": "2026-05-21",
   "features": [
     {
@@ -8,41 +8,43 @@
       "title": "示范任务（Example Task）",
       "priority": "P3",
       "status": "done",
-      "owner": "joey",
-      "description": "演示完整 task 目录（含 spec/plan/log/decisions/owner）"
+      "owner": "joey"
     },
     {
       "id": "T-001",
       "title": "Skill 化升级（v1.3）",
       "priority": "P1",
       "status": "done",
-      "owner": "joey",
-      "description": "新增 SKILL.md 入口 + commands/ 目录 + 删除 150 行限制"
+      "owner": "joey"
     },
     {
       "id": "T-002",
-      "title": "Progress 4 件套 + 轻量化 + Superpower 集成（v1.4）",
+      "title": "Progress 4 件套 + 轻量化（v1.4）",
       "priority": "P0",
       "status": "done",
-      "owner": "大Joe + Dr.EOJAD",
-      "description": "基于 2026-05-18 团队对齐会议输出"
+      "owner": "大Joe + Dr.EOJAD"
     },
     {
       "id": "T-003",
       "title": "两层分发 + Contracts + Product + code-map 自动刷新（v1.5）",
       "priority": "P0",
       "status": "done",
+      "owner": "大Joe + Dr.EOJAD"
+    },
+    {
+      "id": "T-004",
+      "title": "AI Onboarding Archaeology Skill（v1.6）",
+      "priority": "P0",
+      "status": "done",
       "owner": "大Joe + Dr.EOJAD",
-      "description": "解决多角色 vibe coding 的上下文对齐命门：约束/状态分层、跨角色契约 SSOT、产品/设计上下文与代码绑定、code-map 在 merge 后自动刷新",
+      "description": "陌生项目自动考古 skill：任何 AI agent 首次进入项目自动识别并询问；产出 7 份文件；三段诚实标记 + _inferred 晋升机制；用户零命令成本",
       "acceptance": [
-        ".harness/ 目录骨架 + AGENTS.base.md + VERSION",
-        "contracts/ 三类子目录 + README + 模板",
-        "product/ 三类子目录 + README + 模板",
-        "ADR-010 / 011 / 012 / 013 完整",
-        "GitHub Actions: harness-sync + auto-update-code-map",
-        "scripts/install-into.sh 一键接入",
-        "AGENTS.md 升级到 5 条铁律 + 两层架构说明",
-        "changes 模板升级到 5 段"
+        ".harness/skills/onboarding-archaeology/ 完整 skill 包",
+        "SKILL.md + methodology.md + 7 份产出模板",
+        "AGENTS.base.md 加自动触发规则",
+        "ADR-014 完整",
+        "6 条铁律 + AGENTS.md + CHANGELOG + README 同步升级",
+        "等待真实陌生项目跑一次填入 examples/"
       ]
     }
   ],

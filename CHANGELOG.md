@@ -6,6 +6,41 @@
 
 ---
 
+## v1.6 — 2026-05-21 ⭐
+
+**主题：AI Onboarding Archaeology Skill（陆生项目自动考古）**
+
+来源：大Joe 明确提出「项目 onboard 必须有 AI 自动考古流程」。
+核心架构：**Skill 而非脚本**，任何 AI agent（Claude Code / Cursor / OpenCode / Codex / Copilot）开箱可用，用户零命令成本。
+
+### 🆕 新增
+
+- **`.harness/skills/onboarding-archaeology/` 完整 skill 包**
+  - `SKILL.md` — 入口（何时使用 + 工作纪律 + 5 步工作流）
+  - `methodology.md` — 方法论细节（技术栈识别 / 路由提取 / git 考古技巧等）
+  - `output-templates/` — 7 份产出模板
+  - `examples/` — 真实样例（待填）
+- **7 份自动产出**
+  1. `progress/current.md` — 当前状态
+  2. `progress/code-map.md` — 详细代码地图
+  3. `progress/lessons_inferred.md` — 推测的坑
+  4. `progress/onboarding-report.md` ⭐ — 新人 30 分钟入门
+  5. `contracts/api/_inferred.md` — 反向 API 清单
+  6. `product/inferred-features.md` — 推测功能清单
+  7. `progress/onboard-uncertainty.md` ⭐ — AI 不确定的事
+- **AI 自动触发机制**：在 `.harness/AGENTS.base.md` 加「发现 progress/current.md 为空或用户提到『接手/上手/考古/这项目是干啥的』→ 立即询问启动 onboarding-archaeology skill」
+- **三段诚实标记机制**：✅ 代码证据 / ⚠️ 推测但合理 / ❓ 不确定→uncertainty.md
+- **`_inferred` 后缀机制**：所有 AI 推测文件显式标记，复核后由人“晋升”为正式 SSOT
+- **ADR-014** AI Onboarding Archaeology
+
+### ♻️ 升级
+
+- 5 条铁律 → **6 条铁律**（新增「项目首次接入必须跑 onboarding-archaeology」）
+- `.harness/VERSION` → v1.6
+- AGENTS.md 新增「AI Onboarding Archaeology」专章
+
+---
+
 ## v1.5 — 2026-05-21 ⭐
 
 **主题：两层分发 + Contracts + Product + code-map 自动刷新**

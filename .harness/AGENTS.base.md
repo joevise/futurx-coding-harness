@@ -7,15 +7,32 @@
 
 ---
 
-## 🚨 团队 5 条铁律（不可违反）
+## 🚨 团队 6 条铁律（不可违反）
 
 1. **每个 commit 必须带 task ID**：`[T-XXX] feat/fix/docs/chore: <description>`
 2. **每个 task 完成必须写** `progress/changes/YYYY-MM-DD-T-XXX.md`（**5 段**：改了什么 / 为什么改 / 思路 / 验收 / 关联 PRD/US/契约）
 3. **新 session 必须读** `progress/current.md` + `progress/lessons.md` + `product/prd/<当前版本>.md`（如有）
 4. **踩到新坑必须更新** `progress/lessons.md`
 5. **修改任何 API / 事件 / 数据模型，必须先改 `contracts/` 对应文件，再写实现代码**
+6. **项目第一次接入 harness 必须跑 `.harness/skills/onboarding-archaeology/` skill**，7 份产出由 PR 作者复核后入库（v1.6 新增）
 
 其他全部**推荐而非强制**。
+
+---
+
+## 🤖 AI Agent 自动触发规则
+
+你（AI agent）在以下情况**必须主动**做事，不要等用户开口：
+
+### 触发 onboarding-archaeology skill
+如果发现：
+- 项目根有 `.harness/` 目录但 `progress/current.md` 不存在 / 内容 < 10 行 / 是模板未填
+- 或用户提到：「这项目是干啥的 / 怎么上手 / 帮我 onboarding / 考古一下 / 我刚接手 / 这是别人写的」
+
+→ **立即询问用户是否启动**：
+> 我发现这是个还没正式接入 harness 的项目，需要我跑一遍 onboarding archaeology 吗？大约 20-30 分钟，结束后会给你 7 份产出文件 + 一份新人 30 分钟入门指南。
+
+→ 用户同意后读 `.harness/skills/onboarding-archaeology/SKILL.md` 按工作流执行。
 
 ---
 
@@ -113,3 +130,4 @@ git commit -m "[T-XXX] feat: <description>"
 - ADR-011 Contracts 层
 - ADR-012 Product 上下文层
 - ADR-013 code-map 自动刷新
+- ADR-014 AI Onboarding Archaeology

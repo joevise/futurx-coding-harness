@@ -1,6 +1,8 @@
 # FuturX Coding Harness — 上手指南
 
-> 无论你是从零开始还是接手一个半路项目，这份指南告诉你：**第一步做什么、第二步做什么、第三步做什么**。
+> 无论你是从零开始还是接手一个已有代码的项目，**你只需要做一件事：告诉你的 AI 工具"帮我接 harness"**。
+>
+> 剩下的全部由 AI 自动完成。
 >
 > 读完后：你应该能在 30 分钟内让任何一个 AI coding 工具（Claude Code / Cursor / OpenCode / Codex）以正确的方式接手你的项目。
 
@@ -12,286 +14,230 @@
 |---|---|
 | **我要从零启动一个全新项目** | → 场景 A：冷启动 |
 | **我要接手一个已有代码的项目** | → 场景 B：接入现有项目 |
-| **我想让 Claude Code / Cursor 等工具用 harness** | → 所有工具配置章节 |
 
 ---
 
-## 工具配置总览
+## 你只需要做一件事
 
-不管哪种场景，你都需要先告诉你的 AI 工具："**启动时先读 harness 的规则**"。
-
-### Claude Code
-
-```bash
-# 方式 1：项目级配置（在项目根目录）
-echo 'AGENTS.md' > .claude/projects/default.md
-# 或直接让 Claude Code 读取
-```
-
-Claude Code **默认读取 `AGENTS.md`**（无需配置）。首次运行时它会自动找到项目根目录的 `AGENTS.md`。
-
-确认方法：项目根目录有 `AGENTS.md` 即可。
-
-### Cursor
-
-Cursor 读取 `.cursorrules` 文件。Harness 安装时已软链：
-
-```bash
-ls -la .cursorrules  # 应该指向 AGENTS.md
-```
-
-如果没软链，手动创建：
-
-```bash
-ln -sf AGENTS.md .cursorrules
-```
-
-### OpenCode / OpenClaw
-
-直接读 `AGENTS.md`。启动后告诉它：
+**告诉你的 AI 工具：**
 
 ```
-请先读 AGENTS.md 和 .harness/AGENTS.base.md，然后告诉我当前项目状态。
+帮我把这个项目接上 FuturX Coding Harness。
 ```
 
-### Codex（GitHub）
+就这么一句话。AI 会：
+1. 检测项目当前状态（全新 vs 已有代码）
+2. 自动完成所有初始化工作
+3. 问你接下来要做什么
 
-在项目根目录创建 `.github/copilot-instructions.md`：
+**你不需要敲任何命令、不需要装任何东西、不需要记任何路径。**
 
-```markdown
-# Copilot Instructions
+---
 
-在开始任何任务前，先读取以下文件：
-1. AGENTS.md
-2. .harness/AGENTS.base.md
-3. progress/current.md
-4. progress/lessons.md
-```
+## 工具配置（AI 工具会自动处理）
 
-Harness 安装脚本已自动处理此事。
+不管你用哪个工具，只要 AI 能读文件系统，它就会自动找到项目根目录的 `AGENTS.md` 并读取。
 
-### 通用原则
+| 你的 AI 工具 | 是否支持 | 说明 |
+|---|---|---|
+| **Claude Code** | ✅ | 默认读取项目根目录 AGENTS.md |
+| **Cursor** | ✅ | 自动读取 `.cursorrules`（Harness 安装时会软链） |
+| **OpenCode / OpenClaw** | ✅ | 直接读 AGENTS.md |
+| **VS Code + Copilot** | ✅ | 读取 `.github/copilot-instructions.md`（Harness 安装时自动创建） |
+| **GitHub Copilot Chat** | ✅ | 同上 |
 
-**任何 AI coding 工具**，只要它能读文件系统，就让它先读这两个文件：
-
-1. `AGENTS.md` — 项目入口（项目名 + 版本 + 工具配置）
-2. `.harness/AGENTS.base.md` — 团队约束（铁律 + Session 流程）
+**你不需要手动配置任何东西**。接好 harness 的项目，任何 AI 工具打开都能用。
 
 ---
 
 ## 场景 A：冷启动（全新项目，从零开始）
 
-> 适用：你要在一个空目录里开始做新项目，还没有一行代码。
+> 适用：你有一个空目录，或者一个刚建好的 Git 仓库，还没有业务代码。
 
-### Step 1：初始化 Git 仓库（2 分钟）
+### Step 1：把你的空项目交给 AI（1 分钟）
 
-```bash
-cd ~/your-project-path
-git init
-git remote add origin https://github.com/your-org/your-project.git
-# 或你的 GitLab
-git remote add origin https://git.futurx.cc/futurx/your-org/your-project.git
-```
-
-### Step 2：接入 Harness（30 秒）
-
-```bash
-bash ~/joevise-projects/futurx-coding-harness/scripts/install-into.sh
-```
-
-这个脚本会创建：
-- `.harness/` — 约束层（只读）
-- `progress/` — 开发过程目录
-- `contracts/` — 契约目录
-- `product/` — 产品目录
-- `AGENTS.md` — 项目入口
-- `SKILL.md` — Agent skill 入口
-- 工具配置文件（`.cursorrules` / `.github/copilot-instructions.md` 等）
-
-### Step 3：用 AI 工具打开项目（1 分钟）
-
-用你最顺手的工具打开项目目录：
-
-```bash
-# Claude Code
-claude
-
-# Cursor
-cursor .
-
-# OpenCode
-opencode
-
-# 直接用 VS Code / JetBrains 等编辑器也行
-```
-
-### Step 4：AI 自动识别 + 初始化 current.md（5 分钟）
-
-全新项目还没有 `progress/current.md` 的内容。AI 工具进入后，你应该看到它识别到 `.harness/` 但 `progress/current.md` 几乎是空的。
-
-**告诉 AI 一句话**：
+用你最顺手的工具打开项目目录，告诉它：
 
 ```
-这是一个全新项目，请帮我初始化 harness：
-
-1. 编辑 AGENTS.md 顶部的项目名
-2. 帮我写 progress/current.md（全新项目版）
-3. 告诉我接下来做什么
+帮我接上 FuturX Coding Harness。
 ```
 
-AI 会：
-- 确认项目基本信息（项目名、技术栈、目标）
-- 起草 `progress/current.md`
-- 给出下一个 Action 项
+### Step 2：AI 自动完成初始化（5 分钟）
 
-### Step 5：第一个 commit（2 分钟）
+AI 会自动：
 
-```bash
-git add -A
-git commit -m "[T-000] chore: 初始化 FuturX Coding Harness v$(cat .harness/VERSION)"
-git push origin main
+1. 识别这是一个全新项目
+2. 从 harness 主仓库获取 `.harness/` 约束层
+3. 初始化 `progress/`、`contracts/`、`product/` 目录骨架
+4. 创建 `AGENTS.md` 入口文件
+5. 软链工具配置文件（`.cursorrules` 等）
+6. 安装 GitHub workflows（如果用 GitHub）
+7. 起草第一版 `progress/current.md`
+
+### Step 3：确认并补充项目信息（5 分钟）
+
+AI 初始化完成后会告诉你它做了什么，然后问你：
+
+- 项目叫什么名字？
+- 做什么业务？
+- 用什么技术栈？
+
+你回答，AI 更新 `AGENTS.md` 和 `progress/current.md`。
+
+### Step 4：第一个 commit（1 分钟）
+
 ```
+帮我提交。
+```
+
+AI 自动 `git add -A && git commit -m "[T-000] chore: 初始化 FuturX Coding Harness vX.X"`。
+
+---
 
 ### 冷启动完成 ✓
 
-之后每次新 session，AI 工具会自动读 `progress/current.md` + `progress/lessons.md`，你不需要再做任何配置。
+之后每次新 session，AI 工具会自动读 `progress/current.md` + `progress/lessons.md` + `product/prd/`（如有），你不需要再做任何配置。
 
 ---
 
-## 场景 B：接入现有项目（接手已有代码的仓库）
+## 场景 B：接入现有项目（已有代码的仓库）
 
-> 适用：项目已经有代码了，但没用 harness 或想切换到 harness。
+> 适用：项目已经有代码了，但没用 harness，或者想切换到 harness。
 
-### Step 1：.clone 项目（如果还没 clone）
+### Step 1：把项目交给 AI（1 分钟）
 
-```bash
-git clone https://git.futurx.cc/futurx/your-team/your-project.git
-cd your-project
-```
-
-### Step 2：接入 Harness（30 秒）
-
-```bash
-bash ~/joevise-projects/futurx-coding-harness/scripts/install-into.sh
-```
-
-**重要**：这个脚本是**幂等的、只加不改**的：
-- 已有的代码 → 一行不动
-- 已有的 `progress/` → 跳过（不会覆盖）
-- 没有的目录 → 才创建
-
-### Step 3：用 AI 工具打开项目（1 分钟）
-
-```bash
-# Claude Code / Cursor / OpenCode / Codex 等
-```
-
-### Step 4：告诉 AI "考古这个项目"（20-30 分钟）⭐
-
-**这是最关键的一步**。看着 AI 的眼睛，说：
+用你最顺手的工具打开项目目录，告诉它：
 
 ```
-这项目我没接触过，帮我考古一下。
+帮我把这个项目接上 FuturX Coding Harness。
 ```
 
-AI 会自动识别场景（`progress/current.md` 几乎为空），询问是否启动 onboarding archaeology。同意后它会：
+### Step 2：AI 自动完成初始化（5 分钟）
 
-1. **机器探针**（5-10 分钟）：扫描目录结构、git 历史、依赖文件、路由文件、TODO/FIXME 注释
-2. **AI 理解**（10-20 分钟）：追踪入口 → 主流程 → 抽样活跃模块 → 推测业务逻辑
-3. **7 份产出**：写入 `progress/` 和 `contracts/` 目录
+AI 会自动：
 
-**产出的文件**：
+1. 识别这是一个有代码的已有项目
+2. 从 harness 主仓库获取 `.harness/` 约束层
+3. 初始化 `progress/`、`contracts/`、`product/` 目录骨架
+4. 创建/更新 `AGENTS.md`
+5. 安装 GitHub workflows
+6. **自动识别项目当前状态**（技术栈、目录结构）
 
-| 文件 | 用途 |
-|---|---|
-| `progress/current.md` | 项目当前状态，新人 5 分钟入门 |
-| `progress/code-map.md` | 详细代码地图 |
-| `progress/lessons_inferred.md` | AI 推测的踩坑记录（待你复核） |
-| `progress/onboarding-report.md` ⭐ | **你最先读的**，30 分钟上手指南 |
-| `contracts/api/_inferred.md` | 反向提取的 API 清单（待复核） |
-| `product/inferred-features.md` | AI 推测的产品功能 |
-| `progress/onboard-uncertainty.md` ⭐ | **最重要的**，AI 标出的"我不确定"清单 |
+### Step 3：考古这个项目（20-30 分钟）⭐
 
-### Step 5：人工复核（10-20 分钟）
+如果 AI 发现这是一个有代码的已有项目，它会主动询问：
 
-考古完成后，**你必须做这几件事**：
+> "我看到这个项目已经有代码了，需要我跑一遍 onboarding archaeology 吗？我会把所有代码结构、API、模块依赖、技术栈、潜在风险全部摸清楚，生成一份新人 30 分钟上手指南。"
 
-#### 5a. 读 `onboarding-report.md`
-这应该让你在 30 分钟内对这个项目有手感。读完后你应该知道：
-- 项目是干啥的
-- 怎么跑起来
-- 改一个常见功能要碰哪些文件
-- 哪里有坑
+你说"好"，AI 就开始考古（详见 onboarding archaeology skill）。
 
-#### 5b. 拿 `onboard-uncertainty.md` 找前作者/前同事问清楚
-这份清单里全是 AI 拿不准的地方。拿着它去找原作者过一遍，比自己猜快 10 倍。
+### Step 4：人工复核（10-20 分钟）
 
-#### 5c. 确认 API 契约
-打开 `contracts/api/_inferred.md`，对照代码确认 API 是否准确。
-- 如果没问题：`git mv contracts/api/_inferred.md contracts/api/<service-name>.md`
-- 如果有误：修正后再 rename
+考古完成后，AI 会产出 7 份文件。你需要：
 
-#### 5d. 合并 lessons
-`progress/lessons_inferred.md` 里的推测坑，如果确认是真的，手动合并到 `progress/lessons.md`（如果已存在的话）。
+1. **读 `progress/onboarding-report.md`**（你最先读的，30 分钟入门）
+2. **拿 `progress/onboard-uncertainty.md` 找前作者问清楚**（AI 标出的"我不确定"清单）
+3. **确认 `contracts/api/_inferred.md`**，无误后去掉 `_inferred` 后缀
+4. **合并 `progress/lessons_inferred.md`** 到 lessons.md（如有）
 
-### Step 6：提交（2 分钟）
+### Step 5：提交
 
-```bash
-# 晋升 _inferred 文件（去掉后缀）
-git mv contracts/api/_inferred.md contracts/api/<your-service>.md 2>/dev/null || true
-
-git add -A
-git commit -m "[T-000] chore: 接入 FuturX Coding Harness v$(cat .harness/VERSION)"
-git push origin main
 ```
+帮我提交。
+```
+
+---
 
 ### 接入完成 ✓
 
-之后团队任何人加入，只需要 `git clone` + `bash install-into.sh`，AI 工具自动识别 harness，任何角色进来都能拿到一致的上下文。
+之后团队任何人加入，只需要 `git clone`，AI 工具自动识别 harness，任何角色进来都能拿到一致的上下文。
 
 ---
 
-## 附录：install-into.sh 做了什么
+## 产品文档放在哪
 
-| 操作 | 说明 |
-|---|---|
-| 创建 `.harness/` | 从主仓库复制约束层（AGENTS.base.md / VERSION / scripts / skills / templates / decisions） |
-| 创建 `progress/` | 目录骨架，不覆盖已有内容 |
-| 创建 `contracts/` | 目录骨架，不覆盖已有内容 |
-| 创建 `product/` | 目录骨架，不覆盖已有内容 |
-| 软链 `CLAUDE.md` → `AGENTS.md` | Claude Code 自动读取 |
-| 软链 `.cursorrules` → `AGENTS.md` | Cursor 自动读取 |
-| 创建 `.github/copilot-instructions.md` | Codex/GitHub Copilot 读取 |
-| 安装 `.github/workflows/` | harness-sync.yml + auto-update-code-map.yml |
-| 初始化 `progress/current.md` | 仅当文件不存在时（全新项目版模板） |
+项目里所有产品相关的内容，放在 `product/` 目录：
+
+```
+product/
+├── prd/                         ← PRD（产品需求文档）放这里
+│   ├── v1.0.md                  ← 例如：v1.0 的 PRD
+│   └── v2.0.md                  ← 产品迭代后新增版本
+│
+├── design/                      ← 设计相关
+│   ├── figma-links.md           ← 所有 Figma 设计稿的链接
+│   └── prototypes/              ← HTML/CSS 原型文件（如果有）
+│
+└── user-stories/               ← 核心用户故事
+    ├── US-001.md
+    └── US-002.md
+```
+
+### PRD 放在 `product/prd/` 的好处
+
+- AI 每次 session 开始时**自动读到**（Session 流程规定）
+- 和代码在同一个仓库，**上下文不割裂**
+- 代码改的时候，PRD 也在同一个地方，方便一起 review
+
+### 纯产品项目也能用 harness
+
+如果你的仓库一开始只有产品文档、没有代码：
+
+1. AI 接入 harness 后，先在 `product/prd/` 写 PRD
+2. 设计稿链接放进 `product/design/figma-links.md`
+3. 等产品确认后，再开始写代码
+
+**harness 不要求代码先行**。
 
 ---
 
-## 附录：workflows 自动同步
+## 附录：harness 的目录结构速览
 
-安装后，两个 GitHub Actions 自动运行：
-
-### 1. `harness-sync.yml` — 每周一自动同步
-每周一从主仓库拉取 `.harness/` 最新版本，自动开 PR 推送到下游项目。
-
-### 2. `auto-update-code-map.yml` — merge 后自动刷新
-每次 PR merge 到 main，自动跑 `generate-code-map.sh` 刷新 `progress/code-map.md`，并 commit 回仓库。
+```
+project/
+├── .harness/                     🔒 约束层（从主仓库同步，不手动改）
+│   ├── AGENTS.base.md            铁律 + Session 流程
+│   ├── VERSION
+│   ├── skills/                   共享 skills（如 onboarding-archaeology）
+│   ├── scripts/                  共享脚本
+│   ├── templates/                模板
+│   └── decisions/                ADR 副本
+│
+├── AGENTS.md                    项目入口（继承 .harness/）
+├── SKILL.md                     Agent skill 入口
+│
+├── progress/                    📊 开发过程（你维护）
+│   ├── current.md               当前状态（AI 每次读）
+│   ├── code-map.md              代码地图
+│   ├── lessons.md               踩坑日志
+│   └── changes/                每个 task 的记录
+│
+├── contracts/                   📝 跨角色契约（你维护）
+│   ├── api/                    API 定义
+│   ├── events/                 事件/消息 schema
+│   └── data-models/            共享数据结构
+│
+└── product/                    🎨 产品/设计上下文（你维护）
+    ├── prd/                    PRD 文档
+    ├── design/                 设计稿 + 原型
+    └── user-stories/           用户故事
+```
 
 ---
 
 ## 常见问题
 
-**Q: 安装后 AI 工具没有自动读 AGENTS.md？**
-A: 确认 `.cursorrules` 软链存在（`ls -la .cursorrules`）。没有的话手动 `ln -sf AGENTS.md .cursorrules`。
+**Q: 我的 AI 工具没有自动读 AGENTS.md？**
+A: 确认项目根目录有 `AGENTS.md`。如果用了 Cursor，确认 `.cursorrules` 软链存在（`ls -la .cursorrules`）。告诉 AI："请先读 AGENTS.md 和 .harness/AGENTS.base.md"。
 
-**Q: 全新项目，current.md 应该写什么？**
-A: 让 AI 工具帮你初始化。全新项目的 current.md 很简单：项目一句话 + 技术栈 + 开发计划（未来 1-2 周要做什么）。
+**Q: 全新项目，current.md AI 会怎么写？**
+A: AI 会问你几个问题（项目名、业务目标、技术栈），然后基于你的回答起草。全新项目的 current.md 很简单：项目一句话 + 技术栈 + 开发计划。
 
-**Q: 我不想用 onboarding archaeology，太慢了？**
-A: 对于你熟悉的现有项目，可以跳过 Step 4，直接手动填 `progress/current.md`（10 分钟足够）。onboarding archaeology 是给**真正陌生的项目**用的。
+**Q: onboarding archaeology 太慢了，能跳过吗？**
+A: 可以跳过，直接告诉 AI："帮我手动填 progress/current.md"。但如果是**你真正不熟悉的项目**，强烈建议跑一遍——20-30 分钟换 30 分钟读完就能上手，值得。
 
-**Q: 主仓库更新了，我的项目怎么同步？**
-A: 什么都不用做。`harness-sync.yml` 每周一自动给你开 PR。如果你急着要，现在就触发：`git fetch origin` 然后看有没有新 PR。
+**Q: harness 主仓库更新了，我的项目怎么同步？**
+A: 什么都不用做。`harness-sync.yml` 每周一自动给你开 PR。如果急着要，在项目里告诉 AI："帮我同步 harness 最新版本"。
 
 **Q: 多角色并行开发，怎么保证不冲突？**
-A: 每人开发前 `git pull`，MR review 通过后 merge，AI 工具 merge 后会自动刷新 code-map。核心是**上下文在文件里，不在人的脑子里**。
+A: 每人开发前 `git pull`，MR review 通过后 merge。**上下文在文件里，不在人的脑子里**——这是 harness 的核心价值。

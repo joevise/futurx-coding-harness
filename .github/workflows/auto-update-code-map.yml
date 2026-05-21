@@ -1,0 +1,53 @@
+name: Auto Update Code Map
+
+# 在 PR merge 到 main 后自动刷新 progress/code-map.md
+# 详见 decisions/ADR-013-code-map-auto-refresh.md
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'progress/code-map.md'
+      - '.github/**'
+      - '.harness/**'
+      - 'decisions/**'
+      - 'product/**'
+      - 'contracts/**'
+      - 'progress/**'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Generate new code-map
+        run: |
+          mkdir -p progress
+          bash .harness/scripts/generate-code-map.sh > /tmp/code-map.new.md
+
+      - name: Merge with existing (preserve HUMAN section)
+        run: |
+          if [ -f progress/code-map.md ]; then
+            bash .harness/scripts/merge-code-map.sh /tmp/code-map.new.md progress/code-map.md
+          else
+            cp /tmp/code-map.new.md progress/code-map.md
+          fi
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet progress/code-map.md; then
+            echo "No changes to code-map.md"
+            exit 0
+          fi
+          git config user.name "harness-bot"
+          git config user.email "harness-bot@futurx.local"
+          git add progress/code-map.md
+          git commit -m "[chore] auto: refresh code-map post-merge"
+          git push

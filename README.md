@@ -1,18 +1,36 @@
-# FuturX Coding Harness v1.4
+# FuturX Coding Harness v1.5
 
 > FuturX 内部 AI vibe coding 标准 / 模板仓库
 
-## ⭐ v1.4 新增（2026-05-19）
+## ⭐ v1.5 新增（2026-05-21）
 
-基于 2026-05-18 团队对齐会议：
+**两层分发 + Contracts + Product + code-map 自动刷新**
 
-- **Progress 4 件套**：`progress/current.md` + `code-map.md` + `lessons.md` + `changes/*.md`，AI 第一个读，进度可追溯
-- **轻量化**：从 10 条 RULES 降到 **4 条铁律**，其他全部降级为推荐
-- **Superpower 集成**：引用式集成 12+ skill 工具箱，opt-in 不强制
-- **产品输入 3+1 模板**：核心用户故事 / 业务边界 / 验收标准 / 设计规范
-- **新增 ADR-007 / ADR-008 / ADR-009**
+- **两层架构**：`.harness/`（约束层，只读，自动同步）+ 项目状态层（自管理）
+- **Contracts 层**：`contracts/` 跨角色契约 SSOT（铁律 5）
+- **Product 层**：`product/` 产品/设计上下文（PRD / 设计稿 / 用户故事）
+- **code-map 自动刷新**：main 分支 push 后由 GitHub Action 自动跑（HUMAN 段保留）
+- **接入零成本**：`bash scripts/install-into.sh` 一行命令
 
-详见 `AGENTS.md` 和 `decisions/ADR-007 ~ 009`。
+详见 `AGENTS.md` 和 `decisions/ADR-010 ~ 013`。
 
----
+## 历史
 
+- v1.4 — Progress 4 件套 + 轻量化 + Superpower 集成
+- v1.3 — Skill 化升级
+- v1.2 — 多人协作双重对齐
+- v1.1 — SDD 流程
+- v1.0 — 启动协议 + task 主轴
+
+详见 `CHANGELOG.md`。
+
+## 接入新项目
+
+```bash
+cd /path/to/your-project
+bash /path/to/futurx-coding-harness/scripts/install-into.sh
+```
+
+## 上手指南
+
+详见 `GUIDE.md`（30 分钟速通）。

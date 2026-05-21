@@ -1,7 +1,7 @@
 {
   "project": "futurx-coding-harness",
-  "version": "1.4",
-  "updated": "2026-05-19",
+  "version": "1.5",
+  "updated": "2026-05-21",
   "features": [
     {
       "id": "T-000",
@@ -25,12 +25,24 @@
       "priority": "P0",
       "status": "done",
       "owner": "大Joe + Dr.EOJAD",
-      "description": "基于 2026-05-18 团队对齐会议输出：新增 progress 4 件套（current/code-map/lessons/changes），强制项降级为推荐，引入 superpower skill 工具箱，新增产品输入 3+1 模板",
+      "description": "基于 2026-05-18 团队对齐会议输出"
+    },
+    {
+      "id": "T-003",
+      "title": "两层分发 + Contracts + Product + code-map 自动刷新（v1.5）",
+      "priority": "P0",
+      "status": "done",
+      "owner": "大Joe + Dr.EOJAD",
+      "description": "解决多角色 vibe coding 的上下文对齐命门：约束/状态分层、跨角色契约 SSOT、产品/设计上下文与代码绑定、code-map 在 merge 后自动刷新",
       "acceptance": [
-        "AGENTS.md 4 条铁律明确分级",
-        "progress/ 4 件套铺底并 dogfood",
-        "ADR-007 / ADR-008 / ADR-009 完整",
-        "templates/ 5 个模板就绪"
+        ".harness/ 目录骨架 + AGENTS.base.md + VERSION",
+        "contracts/ 三类子目录 + README + 模板",
+        "product/ 三类子目录 + README + 模板",
+        "ADR-010 / 011 / 012 / 013 完整",
+        "GitHub Actions: harness-sync + auto-update-code-map",
+        "scripts/install-into.sh 一键接入",
+        "AGENTS.md 升级到 5 条铁律 + 两层架构说明",
+        "changes 模板升级到 5 段"
       ]
     }
   ],

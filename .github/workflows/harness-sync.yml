@@ -1,0 +1,57 @@
+name: Harness Sync
+
+# 每周一早 9 点自动检查主仓库新版本，把 .harness/ 拉到最新并开 PR
+# 详见 decisions/ADR-010-two-layer-distribution.md
+
+on:
+  schedule:
+    - cron: '0 1 * * 1'   # UTC 周一 01:00 = 北京时间 09:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout self
+        uses: actions/checkout@v4
+
+      - name: Checkout harness main repo
+        uses: actions/checkout@v4
+        with:
+          repository: joevise/futurx-coding-harness
+          ref: main
+          path: _harness_src
+
+      - name: Sync .harness/
+        run: |
+          rm -rf .harness
+          cp -r _harness_src/.harness .harness
+          rm -rf _harness_src
+
+      - name: Detect changes
+        id: diff
+        run: |
+          if git diff --quiet .harness; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Create Pull Request
+        if: steps.diff.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "[chore] sync: refresh .harness/ from main repo"
+          title: "🔄 Harness sync — update .harness/ to latest"
+          body: |
+            自动同步 `.harness/` 到 `joevise/futurx-coding-harness` 主仓库最新版本。
+
+            请检查 4 条铁律 / Session 流程是否有变化，无误后合并即可。
+
+            详见 ADR-010。
+          branch: chore/harness-sync
+          delete-branch: true

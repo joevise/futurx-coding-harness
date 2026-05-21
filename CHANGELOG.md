@@ -6,6 +6,40 @@
 
 ---
 
+## v1.5 — 2026-05-21 ⭐
+
+**主题：两层分发 + Contracts + Product + code-map 自动刷新**
+
+来源：2026-05-21 大Joe × Dr.EOJAD 设计会议。
+核心动机：解决多角色 vibe coding 的「上下文对齐」命门。
+
+### 🆕 新增
+
+- **两层架构**
+  - `.harness/` 约束层（只读，自动同步）：AGENTS.base.md / decisions / templates / scripts / VERSION
+  - 项目状态层：progress / contracts / product（项目自管理）
+- **Contracts 层**：`contracts/{api,events,data-models}/` 跨角色契约 SSOT
+- **Product 层**：`product/{prd,design,user-stories}/` 产品/设计上下文
+- **铁律 5**：修改 API/事件/数据模型必须先改 contracts/
+- **changes 模板升级**：4 段 → 5 段（新增「关联 PRD/US/契约」段）
+- **GitHub Actions**
+  - `harness-sync.yml` — 每周一从主仓库自动同步 `.harness/` + 开 PR
+  - `auto-update-code-map.yml` — main push 后自动刷新 code-map（保留 HUMAN 段）
+- **共享脚本**
+  - `generate-code-map.sh` — 扫描代码生成 code-map 机器段
+  - `merge-code-map.sh` — 合并新旧 code-map，保留 HUMAN 标注
+  - `install-into.sh` — 一键接入新项目
+- **新模板**：AGENTS.project / api-contract / event-contract / data-model / user-story
+- **4 份 ADR**：ADR-010 / ADR-011 / ADR-012 / ADR-013
+
+### ♻️ 升级
+
+- AGENTS.md 4 条铁律 → 5 条铁律
+- AGENTS.md 新增「两层分发」「Contracts 层」「Product 层」「自动同步」「一键接入」章节
+- README.md 更新到 v1.5 主题
+
+---
+
 ## v1.4 — 2026-05-19 ⭐
 
 **主题：Progress 4 件套 + 轻量化 + Superpower 集成**
